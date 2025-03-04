@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/lib-net-annotations/lib-net-annotations.iml" filepath="$PROJECT_DIR$/lib-net-annotations/lib-net-annotations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/petri-obj-paint/petri-obj-paint.iml" filepath="$PROJECT_DIR$/petri-obj-paint/petri-obj-paint.iml" />
+    </modules>
+  </component>
+</project>
