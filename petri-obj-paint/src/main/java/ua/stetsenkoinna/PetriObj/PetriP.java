@@ -1,9 +1,12 @@
 package ua.stetsenkoinna.PetriObj;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -174,13 +177,24 @@ public class PetriP extends PetriMainElement implements Cloneable, Serializable 
      *
      * @param a value on which decrease the quantity of markers
      */
-    public ArrayList<Marker> decreaseMark(int a) {
+    public ArrayList<Marker> decreaseMark(int a, UUID transitionUuid, double currentTime, Consumer<String> logAction) {
         mark -= a;
         if (observedMax < mark) {
             observedMax = mark;
         }
         if (observedMin > mark) {
             observedMin = mark;
+        }
+
+        if (transitionUuid != null && isJobQueue) {
+            sortMarkers(currentTime, logAction);
+            JobMarker markerToPop = markers.stream().map(m -> (JobMarker)m).filter(m -> !m.getUsedTransitionUuids().contains(transitionUuid)).findFirst().orElse(null);
+            ArrayList<Marker> result = new ArrayList<>();
+            result.add(markerToPop);
+            markers.remove(markerToPop);
+            logAction.accept(MessageFormat.format("\nJob {0} sent to workbench {1}, used transitions: [{2}]\n\n",
+                    markerToPop.getUuid(), transitionUuid, markerToPop.getUsedTransitionUuids().stream().map(UUID::toString).collect(Collectors.joining(", "))));
+            return result;
         }
 
         return Utils.popFirst(markers, a);
@@ -311,9 +325,9 @@ public class PetriP extends PetriMainElement implements Cloneable, Serializable 
                 ? markers.stream()
                 .filter(m -> m instanceof JobMarker)
                 .map(m -> (JobMarker) m)
-                .mapToDouble(JobMarker::getActualCompletionTime) // Calculate delay
+                .mapToDouble(JobMarker::getActualCompletionTime)
                 .average()
-                .orElse(0) // Return 0 if no delayed jobs
+                .orElse(0)
                 : 0;
     }
 
@@ -327,10 +341,10 @@ public class PetriP extends PetriMainElement implements Cloneable, Serializable 
                 .sorted() // Sort times in ascending order
                 .collect(Collectors.toList());
 
-        if (creationTimes.size() < 2) return 0.0; // Not enough data for an interval
+        if (creationTimes.size() < 2) return 0.0;
 
         return IntStream.range(0, creationTimes.size() - 1)
-                .mapToDouble(i -> creationTimes.get(i + 1) - creationTimes.get(i)) // Calculate time gaps
+                .mapToDouble(i -> creationTimes.get(i + 1) - creationTimes.get(i))
                 .average()
                 .orElse(0.0);
     }
@@ -350,14 +364,32 @@ public class PetriP extends PetriMainElement implements Cloneable, Serializable 
                 ? markers.stream()
                     .filter(m -> m instanceof JobMarker)
                     .map(m -> (JobMarker) m)
-                    //.filter(m -> m.getActualFinishTime() > m.getExpectedFinishTime()) // Consider only delayed jobs
-                    .mapToDouble(m -> m.getActualFinishTime() - m.getExpectedFinishTime()) // Calculate delay
+                    //.filter(m -> m.getActualFinishTime() > m.getExpectedFinishTime())
+                    .mapToDouble(m -> m.getActualFinishTime() - m.getExpectedFinishTime())
                     .average()
-                    .orElse(0) // Return 0 if no delayed jobs
+                    .orElse(0)
                 : 0;
     }
 
     public boolean isJobQueue() {
         return isJobQueue;
+    }
+
+    public void sortMarkers(double currentTime, Consumer<String> logAction){
+        if (!isJobQueue || markers.size() == 0)
+            return;
+
+        if (markers.size() == 1) {
+            logAction.accept(MessageFormat.format("\nOnly one marker in queue, no need to sort, priority: [{0}]\n", ((JobMarker)markers.get(0)).getPriority(currentTime)));
+            return;
+        }
+
+        logAction.accept(MessageFormat.format("\nMarkets priorities before sorting [{0}]\n",
+                markers.stream().map(m -> Double.toString(((JobMarker)m).getPriority(currentTime))).collect(Collectors.joining(", "))));
+
+        markers.sort(Comparator.comparingDouble(m -> ((JobMarker)m).getPriority(currentTime)));
+
+        logAction.accept(MessageFormat.format("\nMarkets priorities after sorting [{0}]\n",
+                markers.stream().map(m -> Double.toString(((JobMarker)m).getPriority(currentTime))).collect(Collectors.joining(", "))));
     }
 }

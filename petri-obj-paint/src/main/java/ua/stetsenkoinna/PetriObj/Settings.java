@@ -8,6 +8,7 @@ public class Settings {
     private static double deviationOperationsCount = 1;
     private static int minOperationsCount = 3;
     private static int maxOperationsCount = 6;
+    private static double averageJobDelay = 0;
 
     public static double getMeanProcessingTime() {
         return meanProcessingTime;
@@ -63,5 +64,13 @@ public class Settings {
 
     public static void setMaxOperationsCount(int maxOperationsCount) {
         Settings.maxOperationsCount = maxOperationsCount;
+    }
+
+    public static double getAverageJobDelay() {
+        return averageJobDelay;
+    }
+
+    public static void setAverageJobDelay(double averageJobDelay) {
+        Settings.averageJobDelay = averageJobDelay;
     }
 }

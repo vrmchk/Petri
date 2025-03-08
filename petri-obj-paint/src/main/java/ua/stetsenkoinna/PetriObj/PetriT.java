@@ -589,12 +589,7 @@ public class PetriT extends PetriMainElement implements Cloneable, Serializable 
      */
     public void actIn(PetriP[] pp, double currentTime, Consumer<String> logAction) {
         if (this.condition(pp, logAction) == true) {
-            if (transitionType == TransitionType.WORKBENCH){
-                JobMarker jobMarker = getJobMarker(pp);
-                if (jobMarker != null)
-                    logAction.accept(MessageFormat.format("\nJob {0} sent to workbench {1}, used transitions: [{2}]\n\n",
-                        jobMarker.getUuid(), uuid, jobMarker.getUsedTransitionUuids().stream().map(UUID::toString).collect(Collectors.joining(", "))));
-            } else if (transitionType == TransitionType.JOB_FINISHED_CHECKER){
+            if (transitionType == TransitionType.JOB_FINISHED_CHECKER){
                 JobMarker jobMarker = getJobMarker(pp);
                 if (jobMarker == null)
                     return;
@@ -612,7 +607,7 @@ public class PetriT extends PetriMainElement implements Cloneable, Serializable 
 
             ArrayList<Marker> allInputMarkers = new ArrayList<>();
             for (int i = 0; i < inP.size(); i++) {
-                ArrayList<Marker> markers = pp[inP.get(i)].decreaseMark(quantIn.get(i));
+                ArrayList<Marker> markers = pp[inP.get(i)].decreaseMark(quantIn.get(i), transitionType == TransitionType.WORKBENCH ? uuid : null, currentTime, logAction);
                 allInputMarkers.addAll(markers);
             }
 

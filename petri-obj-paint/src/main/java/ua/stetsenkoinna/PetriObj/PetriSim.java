@@ -585,17 +585,9 @@ public class PetriSim implements Cloneable, Serializable {
                 if (queueP == null)
                     return null;
 
-                List<JobMarker> jobMarkers = queueP.getMarkers().stream()
-                        .map(m -> (JobMarker) m)
-                        .collect(Collectors.toList());
+                queueP.sortMarkers(currentTime, logAction);
 
-                logAction.accept(MessageFormat.format("Markets priorities before sorting [{0}]",
-                        jobMarkers.stream().map(m -> Double.toString(m.getPriority(currentTime))).collect(Collectors.joining(", "))));
-
-                jobMarkers.sort(Comparator.comparingDouble(m -> m.getPriority(currentTime)));
-
-                logAction.accept(MessageFormat.format("Markets priorities after sorting [{0}]",
-                        jobMarkers.stream().map(m -> Double.toString(m.getPriority(currentTime))).collect(Collectors.joining(", "))));
+                List<JobMarker> jobMarkers = queueP.getMarkers().stream().map(m -> (JobMarker) m).collect(Collectors.toList());
 
                 Map<Integer, List<PetriT>> priorityMap = new HashMap<>();
                 for (PetriT transition : transitions) {

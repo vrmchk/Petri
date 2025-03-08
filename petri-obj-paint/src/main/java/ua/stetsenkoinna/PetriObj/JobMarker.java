@@ -8,7 +8,6 @@ public class JobMarker extends Marker {
     private int currentOperationsCount;
     private double expectedCompletionTime;
     private double creationTime;
-    private final double averageDelay = 0;
     private double expectedFinishTime;
     private double actualFinishTime;
     private final ArrayList<UUID> usedTransitionUuids = new ArrayList<>();
@@ -40,17 +39,13 @@ public class JobMarker extends Marker {
         return expectedCompletionTime;
     }
 
-    public double getAverageDelay() {
-        return averageDelay;
-    }
-
     public double getOperationsCount() {
         return operationsCount;
     }
 
     public void setCreationTime(double creationTime) {
         this.creationTime = creationTime;
-        this.expectedFinishTime = creationTime + expectedCompletionTime + averageDelay;
+        this.expectedFinishTime = creationTime + expectedCompletionTime + Settings.getAverageJobDelay();
     }
 
     public double getExpectedFinishTime() {
