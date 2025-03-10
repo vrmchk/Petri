@@ -576,8 +576,47 @@ public class PetriT extends PetriMainElement implements Cloneable, Serializable 
             }
         }
         return a == true && b == true && canActIn(pp);
-
     }
+
+    private boolean canActIn(PetriP[] pp){
+        boolean isOneOf = transitionType == TransitionType.JOB_FINISHED_CHECKER ||
+                transitionType == TransitionType.JOB_UNFINISHED_CHECKER ||
+                transitionType == TransitionType.WORKBENCH;
+
+        if (!isOneOf)
+            return true;
+
+        if (transitionType == TransitionType.JOB_FINISHED_CHECKER)
+        {
+            JobMarker jobMarker = getJobMarker(pp);
+            if (jobMarker == null)
+                return false;
+
+            return jobMarker.getCurrentOperationsCount() <= 0;
+        }
+        else if (transitionType == TransitionType.JOB_UNFINISHED_CHECKER)
+        {
+            JobMarker jobMarker = getJobMarker(pp);
+            if (jobMarker == null)
+                return false;
+
+            return jobMarker.getCurrentOperationsCount() > 0;
+        }
+        else if (transitionType == TransitionType.WORKBENCH)
+        {
+            List<JobMarker> jobMarkers = new ArrayList<>();
+            for (int i = 0; i < inP.size(); i++) {
+                PetriP petriP = pp[inP.get(i)];
+                if (petriP.isJobQueue())
+                    jobMarkers = petriP.getMarkers().stream().map(m -> (JobMarker) m).collect(Collectors.toList());
+            }
+
+            return jobMarkers.stream().anyMatch(m -> !m.getUsedTransitionUuids().contains(uuid));
+        }
+
+        return true;
+    }
+
 
     /**
      * The firing transition consists of two actions - tokens input and
@@ -633,45 +672,6 @@ public class PetriT extends PetriMainElement implements Cloneable, Serializable 
         } else {
             //  System.out.println("Condition not true");
         }
-    }
-
-    private boolean canActIn(PetriP[] pp){
-        boolean isOneOf = transitionType == TransitionType.JOB_FINISHED_CHECKER ||
-            transitionType == TransitionType.JOB_UNFINISHED_CHECKER ||
-            transitionType == TransitionType.WORKBENCH;
-
-        if (!isOneOf)
-            return true;
-
-        if (transitionType == TransitionType.JOB_FINISHED_CHECKER)
-        {
-            JobMarker jobMarker = getJobMarker(pp);
-            if (jobMarker == null)
-                return false;
-
-            return jobMarker.getCurrentOperationsCount() <= 0;
-        }
-        else if (transitionType == TransitionType.JOB_UNFINISHED_CHECKER)
-        {
-            JobMarker jobMarker = getJobMarker(pp);
-            if (jobMarker == null)
-                return false;
-
-            return jobMarker.getCurrentOperationsCount() > 0;
-        }
-        else if (transitionType == TransitionType.WORKBENCH)
-        {
-            List<JobMarker> jobMarkers = new ArrayList<>();
-            for (int i = 0; i < inP.size(); i++) {
-                PetriP petriP = pp[inP.get(i)];
-                if (petriP.isJobQueue())
-                    jobMarkers = petriP.getMarkers().stream().map(m -> (JobMarker) m).collect(Collectors.toList());
-            }
-
-            return jobMarkers.stream().anyMatch(m -> !m.getUsedTransitionUuids().contains(uuid));
-        }
-
-        return true;
     }
 
     private JobMarker getJobMarker(PetriP[] pp){

@@ -5,13 +5,11 @@
  */
 package ua.stetsenkoinna.graphpresentation;
 
-import ua.stetsenkoinna.PetriObj.PetriObjModel;
-import ua.stetsenkoinna.PetriObj.PetriP;
-import ua.stetsenkoinna.PetriObj.PetriSim;
-import ua.stetsenkoinna.PetriObj.PetriT;
-import ua.stetsenkoinna.PetriObj.StateTime;
+import ua.stetsenkoinna.PetriObj.*;
+
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Consumer;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 
@@ -59,7 +57,7 @@ public class AnimRunPetriObjModel extends PetriObjModel{  // added 07.2018
     
    
     @Override
-    public void go(double timeModeling) { //виведення протоколу подій та результатів моделювання у об"єкт класу JTextArea
+    public void go(double timeModeling, Consumer<Double> statsAction, double statsInterval) { //виведення протоколу подій та результатів моделювання у об"єкт класу JTextArea
         area.setText(" Events protocol ");
         super.setSimulationTime(timeModeling);
 

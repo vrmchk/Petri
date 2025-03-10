@@ -670,13 +670,18 @@ public class GraphPetriNet implements Cloneable, Serializable {
             }
         }
         area.append("\n Statistics of Petri net transitions:\n");
+        ArrayList<PetriT> workbenches = new ArrayList<>();
         for (GraphPetriTransition grT : graphPetriTransitionList) {
             PetriT T = grT.getPetriTransition();
             area.append("Transition " + T.getName() + " has mean value " + Double.toString(T.getMean()) + "\n"
                     + "         max value = " + Double.toString(T.getObservedMax()) + "\n"
                     + "         min value = " + Double.toString(T.getObservedMin()) + "\n");
+            if (T.getTransitionType() == TransitionType.WORKBENCH)
+                workbenches.add(T);
         }
 
+        double averageLoad = workbenches.stream().mapToDouble(m -> m.getMean()).average().orElse(0);
+        area.append(MessageFormat.format("\n Average workbenches load: {0}\n", averageLoad));
     }
 
     //added 05.12.17

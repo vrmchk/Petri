@@ -2,6 +2,15 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile name="Annotation profile for petri-obj-paint" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/lib-net-annotations/target/classes" />
+        </processorPath>
+        <module name="petri-obj-paint" />
+      </profile>
       <profile name="Annotation profile for PetriObjModelPaint" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -26,15 +35,6 @@
           <entry name="$MAVEN_REPOSITORY$/com/google/auto/value/auto-value/1.7.4/auto-value-1.7.4.jar" />
         </processorPath>
         <module name="lib-net-annotations" />
-      </profile>
-      <profile name="Annotation profile for petri-obj-paint" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/lib-net-annotations/target/classes" />
-        </processorPath>
-        <module name="petri-obj-paint" />
       </profile>
     </annotationProcessing>
   </component>

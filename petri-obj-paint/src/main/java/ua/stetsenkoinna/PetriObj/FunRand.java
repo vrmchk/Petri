@@ -109,7 +109,7 @@ public  class FunRand {
 
     public static int generateOperationsCount() {
         double mean = Settings.getMeanOperationsCount();
-        double deviation = Settings.getDeviationNormProcessing();
+        double deviation = Settings.getDeviationOperationsCount();
         int minOperations = Settings.getMinOperationsCount();
         int maxOperations = Settings.getMaxOperationsCount();
 

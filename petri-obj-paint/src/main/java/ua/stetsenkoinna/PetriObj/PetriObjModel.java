@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.function.Consumer;
 import javax.swing.JTextArea;
 
 /**
@@ -117,6 +118,10 @@ public class PetriObjModel implements Serializable, Cloneable  {
         return listObj;
     }
 
+    public PetriSim getObj() {
+        return listObj.get(0);
+    }
+
     /**
      * Set list of Petri objects
      *
@@ -134,10 +139,11 @@ public class PetriObjModel implements Serializable, Cloneable  {
      * @param timeModeling time modeling
      * 
      */
-    public void go(double timeModeling) {
+    public void go(double timeModeling, Consumer<Double> statsAction, double statsInterval) {
         double min;
         this.setSimulationTime(timeModeling);   
-        this.setCurrentTime(0.0); 
+        this.setCurrentTime(0.0);
+        double prevStatsTime = 0;
       
         getListObj().sort(PetriSim.getComparatorByPriority()); //edited 9.11.2015, 12.10.2017
         for (PetriSim e : getListObj()) { //edited 9.11.2015, 18.07.2018
@@ -180,7 +186,11 @@ public class PetriObjModel implements Serializable, Cloneable  {
             }
 
            this.setCurrentTime(min); // просування часу //3.12.2015
-            
+
+            if (statsInterval > 0 && this.getCurrentTime() - prevStatsTime >= statsInterval){
+                statsAction.accept(this.getCurrentTime());
+            }
+
             if (isProtocolPrint() == true) {
                 System.out.println(" Time progress: time = " + this.getCurrentTime() + "\n");
             }

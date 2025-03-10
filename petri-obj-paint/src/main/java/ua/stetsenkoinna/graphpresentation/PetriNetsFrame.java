@@ -1659,7 +1659,7 @@ public class PetriNetsFrame extends javax.swing.JFrame {
                         protocolTextArea); // Петрі-об"єктна модель, що складається з одного Петрі-об"єкта
                 m.setSimulationTime(Double.parseDouble(timeModelingTextField.getText()));
                 m.setCurrentTime(Double.valueOf(timeStartField.getText()));
-                m.go(Double.valueOf(timeModelingTextField.getText()));
+                m.go(Double.valueOf(timeModelingTextField.getText()), i -> {}, -1);
                 getPetriNetsPanel().getGraphNet().printStatistics(
                         statisticsTextArea);
                 // перетворення у потрібний формат ...
@@ -1716,7 +1716,7 @@ public class PetriNetsFrame extends javax.swing.JFrame {
                 
                 model.setSimulationTime(Double.parseDouble(timeModelingTextField.getText()));
                 model.setCurrentTime(Double.valueOf(timeStartField.getText()));
-                model.go(Double.valueOf(timeModelingTextField.getText()));
+                model.go(Double.valueOf(timeModelingTextField.getText()), i -> {}, -1);
                 getPetriNetsPanel().getGraphNet().printStatistics(
                         statisticsTextArea);
                 // перетворення у потрібний формат ...

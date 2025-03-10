@@ -2,10 +2,7 @@ package ua.stetsenkoinna.PetriObj;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -189,12 +186,10 @@ public class PetriP extends PetriMainElement implements Cloneable, Serializable 
         if (transitionUuid != null && isJobQueue) {
             sortMarkers(currentTime, logAction);
             JobMarker markerToPop = markers.stream().map(m -> (JobMarker)m).filter(m -> !m.getUsedTransitionUuids().contains(transitionUuid)).findFirst().orElse(null);
-            ArrayList<Marker> result = new ArrayList<>();
-            result.add(markerToPop);
             markers.remove(markerToPop);
             logAction.accept(MessageFormat.format("\nJob {0} sent to workbench {1}, used transitions: [{2}]\n\n",
                     markerToPop.getUuid(), transitionUuid, markerToPop.getUsedTransitionUuids().stream().map(UUID::toString).collect(Collectors.joining(", "))));
-            return result;
+            return new ArrayList<>(Arrays.asList(markerToPop));
         }
 
         return Utils.popFirst(markers, a);

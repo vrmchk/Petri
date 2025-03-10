@@ -49,6 +49,52 @@ public class NetLibrary {
         return createWorkbenches(args);
     }
 
+    @NetLibraryMethod
+    public static PetriNet verifyWorkbenchCount8() throws ExceptionInvalidTimeDelay {
+        CreateNetArgs args = new CreateNetArgs();
+        args.workbenchesCount = 8;
+        return createWorkbenches(args);
+    }
+
+    @NetLibraryMethod
+    public static PetriNet verifyAverageDelay() throws ExceptionInvalidTimeDelay {
+        CreateNetArgs args = new CreateNetArgs();
+        args.averageJobDelay = 10;
+        return createWorkbenches(args);
+    }
+
+    @NetLibraryMethod
+    public static PetriNet experimentA1B1() throws ExceptionInvalidTimeDelay {
+        CreateNetArgs args = new CreateNetArgs();
+        args.averageJobDelay = 0;
+        args.workbenchesCount = 6;
+        return createWorkbenches(args);
+    }
+
+    @NetLibraryMethod
+    public static PetriNet experimentA1B2() throws ExceptionInvalidTimeDelay {
+        CreateNetArgs args = new CreateNetArgs();
+        args.averageJobDelay = 0;
+        args.workbenchesCount = 8;
+        return createWorkbenches(args);
+    }
+
+    @NetLibraryMethod
+    public static PetriNet experimentA2B1() throws ExceptionInvalidTimeDelay {
+        CreateNetArgs args = new CreateNetArgs();
+        args.averageJobDelay = 10;
+        args.workbenchesCount = 6;
+        return createWorkbenches(args);
+    }
+
+    @NetLibraryMethod
+    public static PetriNet experimentA2B2() throws ExceptionInvalidTimeDelay {
+        CreateNetArgs args = new CreateNetArgs();
+        args.averageJobDelay = 10;
+        args.workbenchesCount = 8;
+        return createWorkbenches(args);
+    }
+
     public static PetriNet createWorkbenches(CreateNetArgs args) throws ExceptionInvalidTimeDelay {
         final ArrayList<PetriP> places = new ArrayList<>();
         final ArrayList<PetriT> transitions = new ArrayList<>();
